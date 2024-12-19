@@ -1,13 +1,12 @@
 package main
 
 import (
-	"algovis/dll"
-	"fmt"
+	"image/color"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/widget"
 )
 
 func main() {
@@ -15,17 +14,28 @@ func main() {
 	window := app.NewWindow("AlgoVis") //titles the window
 	window.Resize(fyne.NewSize(1200, 800))
 
-	label := widget.NewLabel("Print DLL to console")
-	//label.Move(fyne.NewPos(100, 50))
-	//label.Resize(fyne.NewSize(200, 100))
-	LinkedList := widget.NewButton("click me", func() { dll.DllInit() })
-	//LinkedList.Move(fyne.NewPos(100, 100))
-	//LinkedList.Resize(fyne.NewSize(200, 200))
-	sideMenu := container.NewVBox(label, LinkedList)
-	separator := widget.NewSeparator()
-	contentSpace := container.NewCenter(widget.NewLabel("DLLs in action"), widget.NewButton("clicky button", func() { fmt.Println("anything") }))
-	content := container.NewHBox(sideMenu, separator, contentSpace)
-
+	content := initDllEnv()
 	window.SetContent(content)
 	window.ShowAndRun()
+}
+
+func initDllEnv() *fyne.Container {
+	circle := canvas.NewCircle(color.White)
+	circle.StrokeColor = color.White
+	circle.StrokeWidth = 5
+	circle.Resize(fyne.NewSize(100, 100))
+	cirWid := circle.Size().Width
+	cirHei := circle.Size().Height
+
+	label := canvas.NewText("Node {}", color.Black)
+	label.Alignment = fyne.TextAlignCenter
+	labWid := label.MinSize().Width
+	labHei := label.MinSize().Height
+
+	container := container.NewWithoutLayout(circle, label)
+	container.Resize(fyne.NewSize(cirWid, cirHei))
+
+	label.Resize(label.MinSize())
+	label.Move(fyne.NewPos((cirWid-labWid)/2, (cirHei-labHei)/2))
+	return container
 }
